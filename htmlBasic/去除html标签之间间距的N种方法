@@ -1,0 +1,135 @@
+网页制作常常会遇到这个问题，标签之间明明没有设置标签的间距，但是标签之间还是会存在间距。
+其实导致标签之间存在间距的原因有：换行、tab（制表符）、空格。
+
+一、现象描述
+
+真正意义上的inline-block水平呈现的元素间，换行显示或空格分隔的情况下会有间距，很简单的个例子：
+<input /> <input type="submit" />    //页面上两个元素间将显示间距
+使用CSS更改非inline-block水平元素为inline-block水平，也会有该问题：
+.space a {
+    display: inline-block;
+    padding: .5em 1em;
+    background-color: #cad5eb;
+}
+<div class="space">
+    <a href="##">惆怅</a>
+    <a href="##">淡定</a>
+    <a href="##">热血</a>
+</div>
+
+二、方法
+
+1）移除空格
+<div class="space"><a href="##">惆怅</a><a href="##">淡定</a><a href="##">热血</a></div>    //不方便，不可取
+或
+<div class="space">
+    <a href="##">
+    惆怅</a><a href="##">
+    淡定</a><a href="##">
+    热血</a>
+</div>
+或
+<div class="space">
+    <a href="##">惆怅</a
+    ><a href="##">淡定</a
+    ><a href="##">热血</a>
+</div>
+或
+<div class="space">
+    <a href="##">惆怅</a><!--
+    --><a href="##">淡定</a><!--
+    --><a href="##">热血</a>
+</div>
+等
+
+2）使用margin负值
+.space a {
+    display: inline-block;
+    margin-right: -3px;
+}
+margin负值的大小与上下文的字体和文字大小相关，这个方法不适合大规模使用。
+
+3）让闭合标签吃胶囊
+兼容IE：
+<div class="space">
+    <a href="##">惆怅
+    <a href="##">淡定
+    <a href="##">热血</a>
+</div>
+HTMl5：
+<div class="space">
+    <a href="##">惆怅
+    <a href="##">淡定
+    <a href="##">热血
+</div>
+
+4）使用font-size:0
+在使用inline-block元素的父节点使用font-size:0。
+.space {
+    font-size: 0;
+    -webkit-text-size-adjust:none;    //新版本不用
+}
+.space a {
+    font-size: 12px;
+}
+这个方法，基本上可以解决大部分浏览器下inline-block元素之间的间距(IE7等浏览器有时候会有1像素的间距)。
+
+5）使用letter-spacing
+.space {
+    letter-spacing: -3px;
+}
+.space a {
+    letter-spacing: 0;
+}
+该方法可以搞定基本上所有浏览器，包括IE6/IE7浏览器，
+不过Opera浏览器下有蛋疼的问题：最小间距1像素，然后，letter-spacing再小就还原了。
+
+6）使用word-spacing
+.space {
+    word-spacing: -6px;
+}
+.space a {
+    word-spacing: 0;
+}
+word-spacing的负值只要大到一定程度，其兼容性上的差异就可以被忽略。因为，貌似，word-spacing即使负值很大，也不会发生重叠。
+对于chrome浏览器：
+.space {
+    display: inline-table;
+    word-spacing: -6px;
+}
+
+7）使用letter-spacing和word-spacing去除格栅单元见间隔方法（注意，其针对的是block水平的元素，因此对IE8-浏览器做了hack处理）：
+.yui3-g {
+    letter-spacing: -0.31em; /* webkit */
+    *letter-spacing: normal; /* IE < 8 重置 */
+    word-spacing: -0.43em; /* IE < 8 && gecko */
+}
+
+.yui3-u {
+    display: inline-block;
+    zoom: 1; *display: inline; /* IE < 8: 伪造 inline-block */
+    letter-spacing: normal;
+    word-spacing: normal;
+    vertical-align: top;
+}
+
+8）RayM提供的方法：
+li {
+    display:inline-block;
+    background: orange;
+    padding:10px;
+    word-spacing:0;
+    }
+ul {
+    width:100%;
+    display:table;  /* 调教webkit*/
+    word-spacing:-1em;
+}
+
+.nav li { *display:inline;}
+
+9）jQuery方式
+var se=$(‘.space’);
+var se_html=se.html();
+ se_html=se_html.replace(/\s*</g,'\s*/g,’>’);
+se.html(se_html);
