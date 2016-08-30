@@ -1,6 +1,7 @@
 /*
  * 假设一个矩形的div。
  * 鼠标移到上面，相应地动画从鼠标移进来的方向开始出场动画；鼠标移出，动画随着鼠标方向开始离场动画。
+ * 参考：https://github.com/wayou/SlipHover
 */
 $(".rangeDiv").bind("mouseenter mouseleave",function(e){
 
