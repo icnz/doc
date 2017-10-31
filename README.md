@@ -141,4 +141,6 @@ https://github.com/leecade/ios-dev-flow
 https://github.com/greatghoul/remote-working  
 Windows 绝赞应用  
 https://amazing-apps.gitbooks.io/windows-apps-that-amaze-us/zh-CN/  
+最全的中华古典文集数据库  
+https://github.com/chinese-poetry/chinese-poetry  
 
